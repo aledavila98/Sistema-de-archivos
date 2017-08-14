@@ -13,12 +13,10 @@ int main() {
     block->cargar();//voy a modificar todos los atributos por los mismos atributos que estaban en el disco duro
    std::cout << "siguiente de block: " << block->siguiente << std::endl;*/
     //DataFile* dat = new DataFile("/home/alejandro/Documentos/hola.tp");
-    BloqueTablas* bt = new BloqueTablas(0,-1,"/home/alejandro/Documentos/hola.tp","Mi primera tabla",1,0,1,2,0);
-    MasterBlock* mt = new MasterBlock(0,-1,"/home/alejandro/Documentos/masterblock.tp");
-    bt->escribir();
-    bt->siguiente = 2;
-    bt->cargar();
-    mt->escribir();
+    DataFile* file = new DataFile("/home/alejandro/Documentos/hola.tp");
+    MasterBlock* mb = new MasterBlock(file,-1,-1,-1);
+
+
 
 
     return 0;

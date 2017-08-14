@@ -6,6 +6,7 @@
 #define SISTEMAARCHIVOS_ADMINTABLAS_H
 
 #include "BloqueTablas.h"
+#include "MasterBlock.h
 #include <list>
 
 class AdminTablas

@@ -10,12 +10,15 @@
 class Registros {
     public:
         int length;
+        std::list<CampoDatos> campDatosList;
+
 };
 
 class BloqueRegistros : public Bloques
 {
 public:
-    BloqueRegistros(int nb, int siguiente, char *path) : Bloques(nb, siguiente, path) {}
+
+    BloqueRegistros(int nb, int siguiente, char *path) : Bloques(file, siguiente) {}
 
     int getLengthRegistros()
     {

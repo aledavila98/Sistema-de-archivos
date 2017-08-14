@@ -42,6 +42,12 @@ class DataFile{
             return m;
         }
 
+        bool isEmpty()
+        {
+            fseek(archivo,0,SEEK_END);
+            return ftell(archivo)<=0;
+        }
+
     private:
         char* path;
 };

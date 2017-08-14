@@ -4,22 +4,36 @@
 
 #ifndef SISTEMAARCHIVOS_ADMINBLOQUE_H
 #define SISTEMAARCHIVOS_ADMINBLOQUE_H
-
+class MasterBlock;
 #include "Bloques.h"
 #include "BloqueCampos.h"
 #include "BloqueTablas.h"
 #include "BloqueRegistros.h"
 #include "MasterBlock.h"
 
+
 class AdminBloque
 {
-    AdminBloque()
+    MasterBlock* masterBlock;
+    AdminBloque(DataFile* fil)
     {
+        file=fil;
+        if(file->isEmpty())
+        {
+            formatDataFile();
+            masterBlock->asignarBloque();
+            masterBlock->UpdateMasterBlock();
+        }else
+        {
+            masterBlock= new MasterBlock(file,0,-1,-1);
+            masterBlock->cargar();
+        }
         contBloques+=1;
     }
 
     void formatDataFile() {
-
+        masterBlock = new MasterBlock(0,-1,-1,-1);
+        masterBlock->escribir();
     }
 
     Bloques* loadBloque(int numBlock) {
@@ -27,16 +41,6 @@ class AdminBloque
         bloque->cargar();
         return bloque;
     };
-
-    Bloques* asignarBloque(MasterBlock* mb)
-    {
-        Bloques* block = new Bloques(mb->sigBloqueDisponible++);
-        block->escribir();
-        ActualizarMasterBlock();
-        return block;
-    }
-
-    void ActualizarMasterBlock() {}
 
     private:
         int contBloques=0;

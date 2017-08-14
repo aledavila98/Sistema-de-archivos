@@ -6,17 +6,37 @@
 
 #IncludeRegexTransform: 
 
+/home/alejandro/Documentos/ED2/SistemaArchivos/AdminBloque.h
+Bloques.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/Bloques.h
+BloqueCampos.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/BloqueCampos.h
+BloqueTablas.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/BloqueTablas.h
+BloqueRegistros.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/BloqueRegistros.h
+MasterBlock.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/MasterBlock.h
+
 /home/alejandro/Documentos/ED2/SistemaArchivos/BloqueCampos.h
 Bloques.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/Bloques.h
 list
 -
 
+/home/alejandro/Documentos/ED2/SistemaArchivos/BloqueRegistros.h
+Bloques.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/Bloques.h
+
 /home/alejandro/Documentos/ED2/SistemaArchivos/BloqueTablas.h
 Bloques.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/Bloques.h
 BloqueCampos.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/BloqueCampos.h
+BloqueRegistros.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/BloqueRegistros.h
+AdminBloque.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/AdminBloque.h
 list
 -
 

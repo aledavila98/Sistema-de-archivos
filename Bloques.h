@@ -16,17 +16,24 @@ class Bloques{
         int siguiente;
         DataFile* file;
 
+        Bloques(DataFile* fil, int nb)
+        {
+            file = fil;
+            numeroBloque = nb;
+        }
+
         Bloques(int nb)
         {
             numeroBloque = nb;
         }
 
-        Bloques(int nb, int siguiente,char* path) {
+        Bloques(int nb,int sizeB,int sig) {
             numeroBloque=nb;
-            Bloques::siguiente=siguiente;
-            file = new DataFile(path);
+            siguiente=sig;
+            sizeBloque = sizeB;
+            /*file = new DataFile(path);
             file->crear();//lo movere luego
-        }
+        */}
 
        /* void numBlock()
         {

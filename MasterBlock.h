@@ -11,8 +11,7 @@
 class MasterBlock : public Bloques
 {
     public:
-        int sigBloqueDisponible=0;
-        int sizeBloque;
+        int sigBloqueDisponible;
         int sizeMasterBlock;
         int primerBloqueTabla;
         int actualBloqueTabla;
@@ -20,28 +19,27 @@ class MasterBlock : public Bloques
         int cantBloquesUsados;
         DataFile* file;
 
-        MasterBlock(int nb, int sig, char* p) : Bloques(nb,sig,p) {
-            Bloques::numeroBloque = nb;
-            Bloques::siguiente = sig;
-            numeroBloque=nb;
-            file = new DataFile(p);
-            file->crear();
+        MasterBlock(DataFile* file1, int sigBD, int primBT, int actBT) : Bloques(0,sizeMasterBlock,sigBD) {
+            file=file1;
+            sigBloqueDisponible = sigBD;
+            primerBloqueTabla = primBT;
+            actualBloqueTabla = actBT;
+            sizeMasterBlock = 20;
+            sizeBloque = 512;
         }
+
         Bloques* asignarBloque()
         {
-
+            Bloques* block = new Bloques(this->file,this->sigBloqueDisponible++);
+            block->escribir();
+            UpdateMasterBlock();
+            return block;
         }
 
-        void updateMasterBlock(){
-
+        void UpdateMasterBlock(){
+            this->cargar();
         }
 
-        Bloques* loadBlock(int i)
-        {
-            Bloques* bloque = new Bloques(i);
-            bloque->cargar();
-            return  bloque;
-        }
         char* toChar()
         {
             char* data= new char[sizeMasterBlock];
