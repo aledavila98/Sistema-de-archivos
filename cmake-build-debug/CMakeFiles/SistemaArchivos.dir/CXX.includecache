@@ -18,6 +18,14 @@ BloqueRegistros.h
 MasterBlock.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/MasterBlock.h
 
+/home/alejandro/Documentos/ED2/SistemaArchivos/AdminTablas.h
+BloqueTablas.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/BloqueTablas.h
+MasterBlock.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/MasterBlock.h
+list
+-
+
 /home/alejandro/Documentos/ED2/SistemaArchivos/BloqueCampos.h
 Bloques.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/Bloques.h
@@ -49,7 +57,13 @@ DataFile.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/DataFile.h
 
 /home/alejandro/Documentos/ED2/SistemaArchivos/DataFile.h
+cstring
+-
 stdio.h
+-
+sys/io.h
+-
+iostream
 -
 
 /home/alejandro/Documentos/ED2/SistemaArchivos/MasterBlock.h
@@ -69,4 +83,6 @@ BloqueTablas.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/BloqueTablas.h
 MasterBlock.h
 /home/alejandro/Documentos/ED2/SistemaArchivos/MasterBlock.h
+AdminTablas.h
+/home/alejandro/Documentos/ED2/SistemaArchivos/AdminTablas.h
 

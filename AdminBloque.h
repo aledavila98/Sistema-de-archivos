@@ -4,7 +4,6 @@
 
 #ifndef SISTEMAARCHIVOS_ADMINBLOQUE_H
 #define SISTEMAARCHIVOS_ADMINBLOQUE_H
-class MasterBlock;
 #include "Bloques.h"
 #include "BloqueCampos.h"
 #include "BloqueTablas.h"
@@ -14,6 +13,7 @@ class MasterBlock;
 
 class AdminBloque
 {
+public:
     MasterBlock* masterBlock;
     AdminBloque(DataFile* fil)
     {
@@ -21,8 +21,8 @@ class AdminBloque
         if(file->isEmpty())
         {
             formatDataFile();
-            masterBlock->asignarBloque();
-            masterBlock->UpdateMasterBlock();
+            asignarBloque();
+            UpdateMasterBlock();
         }else
         {
             masterBlock= new MasterBlock(file,0,-1,-1);
@@ -32,8 +32,17 @@ class AdminBloque
     }
 
     void formatDataFile() {
-        masterBlock = new MasterBlock(0,-1,-1,-1);
+        masterBlock = new MasterBlock(file,-1,-1,-1);
         masterBlock->escribir();
+    }
+
+
+    Bloques* asignarBloque()
+    {
+        Bloques* block = new Bloques(this->file,this->sigBloqueDisponible++);
+        block->escribir();
+        UpdateMasterBlock();
+        return block;
     }
 
     Bloques* loadBloque(int numBlock) {
@@ -42,9 +51,14 @@ class AdminBloque
         return bloque;
     };
 
+    void UpdateMasterBlock(){
+        masterBlock->cargar();
+    }
+
     private:
         int contBloques=0;
         DataFile* file;
+        int sigBloqueDisponible=0;
 
 };
 

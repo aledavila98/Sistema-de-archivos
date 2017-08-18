@@ -21,10 +21,11 @@ class Tablas{
         int actualBloqueCampos;
         int primerBloqueRegistros;
         int actualBloqueRegistros;
+        int numeroBloque;
         std::list<Campos*> listCampos;
         std::list<Registros*> listRegistros;
 
-        Tablas(char nom[20],int ID,int pb,int ab, int pbr,int abr) {
+        Tablas(DataFile* file1,char nom[20],int ID,int pb,int ab, int pbr,int abr,int numBlock) {
             strncpy(this->nombre,nom, sizeof(this->nombre)-1);
             nombre[19]='\0';
             this->ID = ID;
@@ -32,7 +33,8 @@ class Tablas{
             actualBloqueCampos=ab;
             primerBloqueRegistros=pbr;
             actualBloqueRegistros=abr;
-
+            numeroBloque = numBlock;
+            file = file1;
         }
         void CargarCampos()
         {
@@ -51,7 +53,7 @@ class Tablas{
             }
         }
 
-    void crearCampo(MasterBlock* block,char name[20],int tipo) {
+    void crearCampo(AdminBloque* block,char name[20],int tipo) {
         Campos *campos = new Campos(name, tipo, 28);
         if (primerBloqueCampos == -1) {
             Bloques *b = block->asignarBloque();
@@ -93,7 +95,8 @@ class Tablas{
     }
 
 
-        void InterpretarRegistros(char* data, int length)
+
+    void InterpretarRegistros(char* data, int length)
         {
 
         }
@@ -112,6 +115,8 @@ class Tablas{
             memcpy(&data[pos],&primerBloqueRegistros,4);
             pos+=4;
             memcpy(&data[pos],&actualBloqueRegistros,4);
+            pos+=4;
+            memcpy(&data[pos],&numeroBloque,4);
             pos+=4;
         }
 
@@ -132,6 +137,8 @@ class Tablas{
             pos+=4;
             memcpy(&actualBloqueRegistros,&data[pos],4);
             pos+=4;
+            memcpy(&numeroBloque,&data[pos],4);
+            pos+=4;
         }
 
 private:
@@ -148,7 +155,13 @@ class BloqueTablas : public Bloques
         ,int actualBloqueRegistros) : Bloques(nb,sizeBloque,siguiente) {
             BloqueTablas::numeroBloque = nb;
             BloqueTablas::siguiente = siguiente;
-            listaTablas.push_back(new Tablas(nom,ID,primerBloque,actualBloque,primerBloqueRegistros,actualBloqueRegistros));
+            listaTablas.push_back(new Tablas(file,nom,ID,primerBloque,actualBloque,primerBloqueRegistros,actualBloqueRegistros,nb));
+        }
+
+        BloqueTablas(DataFile* file, int nB) : Bloques(file,nB)
+        {
+            this->file = file;
+            this->numeroBloque = nB;
         }
 
         char* toChar()
@@ -193,9 +206,9 @@ class BloqueTablas : public Bloques
             }
         }
 
-    private:
-        int cantEntradas = listaTablas.size();
-        DataFile* file;
+    int cantEntradas = listaTablas.size();
+private:
+    DataFile* file;
 };
 
 #endif //SISTEMAARCHIVOS_BLOQUETABLAS_H

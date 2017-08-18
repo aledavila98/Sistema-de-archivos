@@ -17,9 +17,9 @@ class MasterBlock : public Bloques
         int actualBloqueTabla;
         int ultimoBloqueDisponible;
         int cantBloquesUsados;
-        DataFile* file;
 
-        MasterBlock(DataFile* file1, int sigBD, int primBT, int actBT) : Bloques(0,sizeMasterBlock,sigBD) {
+
+        MasterBlock(DataFile* file1, int sigBD, int primBT, int actBT) : Bloques(file1,0) {
             file=file1;
             sigBloqueDisponible = sigBD;
             primerBloqueTabla = primBT;
@@ -28,17 +28,7 @@ class MasterBlock : public Bloques
             sizeBloque = 512;
         }
 
-        Bloques* asignarBloque()
-        {
-            Bloques* block = new Bloques(this->file,this->sigBloqueDisponible++);
-            block->escribir();
-            UpdateMasterBlock();
-            return block;
-        }
 
-        void UpdateMasterBlock(){
-            this->cargar();
-        }
 
         char* toChar()
         {
@@ -73,7 +63,7 @@ class MasterBlock : public Bloques
         }
 
     private:
-
+    DataFile* file;
 };
 
 #endif //SISTEMAARCHIVOS_MASTERBLOCK_H

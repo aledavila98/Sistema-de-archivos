@@ -5,7 +5,11 @@
 #ifndef SISTEMAARCHIVOS_DATAFILE_H
 #define SISTEMAARCHIVOS_DATAFILE_H
 
+
+#include <cstring>
 #include <stdio.h>
+#include <sys/io.h>
+#include <iostream>
 
 class DataFile{
 
@@ -45,7 +49,7 @@ class DataFile{
         bool isEmpty()
         {
             fseek(archivo,0,SEEK_END);
-            return ftell(archivo)<=0;
+            return  ftell(archivo)>0 ? false:true;
         }
 
     private:
