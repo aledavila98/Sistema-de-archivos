@@ -14,33 +14,58 @@ int main() {
     block->cargar();//voy a modificar todos los atributos por los mismos atributos que estaban en el disco duro
    std::cout << "siguiente de block: " << block->siguiente << std::endl;*/
     //DataFile* dat = new DataFile("/home/alejandro/Documentos/hola.tp");
-    DataFile* file = new DataFile("/home/alejandro/Documentos/ED2/SistemaArchivos/probando.tp");
+    DataFile* file = new DataFile("/home/alejandro/Documentos/ED2/SistemaArchivos/prueba.pe");
     file->crear();
     file->isEmpty();
     file->abrir();
-    AdminBloque* adBlock = new AdminBloque(file);
-    AdminTablas* adTablas = new AdminTablas(file,adBlock->masterBlock);
+    AdminBloque* adminBloque = new AdminBloque(file);
+    AdminTablas* adminTablas = new AdminTablas(file,adminBloque->masterBlock);
+    for(int c=0;c<=15;c++) {
+        char *nombre = new char[20];
+        nombre[0] = 't';
+        nombre[1] = 'A';
+        nombre[2] = 'b';
+        nombre[3] = 'l';
+        nombre[4] = 'A';
+        nombre[5] = 'S';
 
-    for(int c=0;c<100;c++)
+        char cadena[15];
+          sprintf(cadena, "%d", c);
+          for (int x = 0; cadena[x] != '\0'; x++) {
+              nombre[x + 6] = cadena[x];
+          }
+
+        adminTablas->CrearTablas(nombre, adminBloque, c);
+    }
+
+    adminTablas->loadBloqueTabla();
+    adminTablas->ListarTablas(adminTablas->bTablasList);
+   /* std::list<BloqueTablas*>::iterator it = adTablas->bTablasList.begin();
+    std::advance(it,1);
+    BloqueTablas* bt = *it;
+ //   bt->cargar();
+    std::cout<<bt->numeroBloque;
+*//*
+  for(int c=0;c<15;c++)
     {
-        char* nom= new char[20];
-        nom[0] = 'B';
-        nom[1] = 'A';
-        nom[2] = 'C';
-        nom[3] = 'A';
-        nom[4] = 'A';
-        nom[5] = 'S';
+        char* nombre= new char[20];
+        nombre[0] = 't';
+        nombre[1] = 'A';
+        nombre[2] = 'b';
+        nombre[3] = 'l';
+        nombre[4] = 'A';
+        nombre[5] = 'S';
 
-        char cadena[100];
+        char cadena[15];
         sprintf(cadena, "%d", c);
         for(int x=0;cadena[x]!='\0';x++)
         {
-            nom[x+6]=cadena[x];
+            nombre[x+6]=cadena[x];
         }
 
-        adTablas->CrearTablas(nom,adBlock,c);
+        adTablas->CrearTablas(nombre,adBlock,c);
         int tipo=0;
-        for(int i=0;i<10;i++)
+        /*for(int i=0;i<10;i++)
         {
             char* nombreC = new char[20];
             nombreC[0] = 'A';
@@ -61,8 +86,12 @@ int main() {
                 tipo=1;
             adTablas->CrearCampo(&nombreC,c,tipo,adBlock);
             tipo=0;
-        }
-    }
+        }//*/
+
+
+
+ //   }
+
 
 
 

@@ -62,6 +62,7 @@ class MasterBlock : public Bloques
             pos+=4;
         }
 
+
     private:
     DataFile* file;
 };

@@ -26,8 +26,7 @@ class Tablas{
         std::list<Registros*> listRegistros;
 
         Tablas(DataFile* file1,char nom[20],int ID,int pb,int ab, int pbr,int abr,int numBlock) {
-            strncpy(this->nombre,nom, sizeof(this->nombre)-1);
-            nombre[19]='\0';
+            strncpy(this->nombre,nom, sizeof(this->nombre));
             this->ID = ID;
             primerBloqueCampos=pb;
             actualBloqueCampos=ab;
@@ -56,8 +55,8 @@ class Tablas{
     void crearCampo(AdminBloque* block,char name[20],int tipo) {
         Campos *campos = new Campos(name, tipo, 28);
         if (primerBloqueCampos == -1) {
-            Bloques *b = block->asignarBloque();
-            BloqueCampos *blockCamps = new BloqueCampos(file, b->numeroBloque);
+            int numBlock = block->asignarBloque()->numeroBloque;
+            BloqueCampos *blockCamps = new BloqueCampos(file, numBlock);
             blockCamps->camposList.push_back(campos);
             blockCamps->cant++;
             blockCamps->escribir();
@@ -73,16 +72,14 @@ class Tablas{
                 int maximo = 17;
                 if (blockCamps->cant < maximo) {
                     blockCamps->camposList.push_back(campos);
-                    blockCamps->cant;
+                    blockCamps->cant++;
                     blockCamps->escribir();
                     listCampos.push_back(campos);
                     return;
                 }
                 actual = blockCamps->siguiente;
-
             }
-            Bloques *b = block->asignarBloque();
-            BloqueCampos *bloqueCampos = new BloqueCampos(file, b->numeroBloque);
+            BloqueCampos *bloqueCampos = new BloqueCampos(file, block->asignarBloque()->numeroBloque);
             BloqueCampos *tmpBlock = new BloqueCampos(file, actualBloqueCampos);
             tmpBlock->cargar();
             tmpBlock->siguiente = bloqueCampos->numeroBloque;
@@ -102,7 +99,7 @@ class Tablas{
         }
 
         char* toChar(){
-            char* data = new char[40];
+            char* data = new char[44];
             int pos = 0;
             memcpy(&data[pos],&nombre,20);
             pos+=20;
@@ -162,11 +159,12 @@ class BloqueTablas : public Bloques
         {
             this->file = file;
             this->numeroBloque = nB;
+            siguiente=-1;
         }
 
         char* toChar()
         {
-            char* data = new char[Bloques::sizeBloque];
+            char* data = new char[(listaTablas.size()*44)+16];
             int pos = 0;
             memcpy(&data[pos],&numeroBloque,4);
             pos+=4;
@@ -180,8 +178,8 @@ class BloqueTablas : public Bloques
             {
                 Tablas* tmp = *c;
                 char* entries = tmp->toChar();
-                memcpy(&data[pos],&entries,40);
-                pos+=40;
+                memcpy(&data[pos],&entries,44);
+                pos+=44;
             }
             return  data;
         }
@@ -202,12 +200,30 @@ class BloqueTablas : public Bloques
                 Tablas* tabla = new Tablas();
                 tabla->toBloque(&data[pos]);
                 listaTablas.push_back(tabla);
-                pos+=40;
+                pos+=44;
             }
         }
 
-    int cantEntradas = listaTablas.size();
-private:
+        void escribir()
+        {
+            file->abrir();
+            char* data = this->toChar();
+            int pos= numeroBloque*512;
+            file->escribir(data,pos,512);
+            file->cerrar();
+        }
+
+        void cargar()
+        {
+            file->abrir();
+            int pos= numeroBloque *512;
+            char* data = file->leer(pos,512);
+            toBloque(data);
+            file->cerrar();
+        }
+
+    int cantEntradas = 0;
+
     DataFile* file;
 };
 

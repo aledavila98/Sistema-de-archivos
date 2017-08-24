@@ -49,7 +49,7 @@ class DataFile{
         bool isEmpty()
         {
             fseek(archivo,0,SEEK_END);
-            return  ftell(archivo)>0 ? false:true;
+            return ftell(archivo) <= 0;
         }
 
     private:

@@ -25,6 +25,8 @@ class Bloques{
         Bloques(int nb)
         {
             numeroBloque = nb;
+            siguiente = 0;
+            sizeBloque = 512;
         }
 
         Bloques(int nb,int sizeB,int sig) {

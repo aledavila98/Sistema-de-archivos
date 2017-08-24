@@ -35,6 +35,7 @@ public:
         if (bloque->masterBlock->primerBloqueTabla == -1) {
             BloqueTablas *blockTablas = new BloqueTablas(file, 0);
             blockTablas->listaTablas.push_back(t);
+            blockTablas->cantEntradas++;
             blockTablas->escribir();
             bTablasList.push_back(blockTablas);
             bloque->masterBlock->actualBloqueTabla = 0;
@@ -49,32 +50,36 @@ public:
             if (bt->cantEntradas < max) {
                 t->numeroBloque = bt->numeroBloque;
                 bt->listaTablas.push_back(t);
+                bt->cantEntradas++;
                 bt->escribir();
+
                 return;
             }
             x++;
         }
-        Bloques *block = bloque->asignarBloque();
+
         std::list<BloqueTablas *>::iterator c = bTablasList.begin();
-        std::advance(c, x);
+        std::advance(c, x-1);
         BloqueTablas *bt = *c;
-        bt->siguiente = block->numeroBloque;
+        int nbloque=bloque->asignarBloque()->numeroBloque;
+        bt->siguiente = nbloque;
         bt->escribir();
-        BloqueTablas *tmp = new BloqueTablas(block->file, block->numeroBloque);
+        BloqueTablas *tmp = new BloqueTablas(file, nbloque);
         t->numeroBloque = tmp->numeroBloque;
         tmp->listaTablas.push_back(t);
+        tmp->cantEntradas++;
         tmp->escribir();
         bloque->masterBlock->actualBloqueTabla = tmp->numeroBloque;
         bloque->masterBlock->escribir();
         bTablasList.push_back(tmp);
     }
 
-    void CrearCampo(char* nombreCampo[20],int id,int tipo, AdminBloque* manejador)
+    void CrearCampo(char nombreCampo[20],int id,int tipo, AdminBloque* manejador)
     {
         Tablas* tablas = BuscarTabla(id);
         if(tablas!=0)
         {
-            tablas->crearCampo(manejador,*nombreCampo,tipo);
+            tablas->crearCampo(manejador,nombreCampo,tipo);
             BloqueTablas* bt = BuscarBloqueTabla(tablas->numeroBloque);
             bt->escribir();
         }
@@ -104,12 +109,14 @@ public:
         return 0;
     }
 
-    void ListarTablas(std::list<Tablas*> tablas)
+    void ListarTablas(std::list<BloqueTablas*> bt)
     {
-        for (std::list<Tablas*>::iterator c = tablas.begin(); c!=tablas.end(); c++)
-        {
-            Tablas* tmp = *c;
-            printf(tmp->nombre);
+        for (std::list<BloqueTablas*>::iterator i = bt.begin(); i!=bt.end(); i++) {
+            BloqueTablas* bt = *i;
+            for (std::list<Tablas *>::iterator c = bt->listaTablas.begin(); c != bt->listaTablas.end(); c++) {
+                Tablas *tmp = *c;
+                printf(tmp->nombre);
+            }
         }
     }
 
