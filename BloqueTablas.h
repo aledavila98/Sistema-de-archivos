@@ -35,6 +35,9 @@ class Tablas{
             numeroBloque = numBlock;
             file = file1;
         }
+
+        Tablas() {}
+
         void CargarCampos()
         {
             int actual=primerBloqueCampos;
@@ -52,50 +55,138 @@ class Tablas{
             }
         }
 
-    void crearCampo(AdminBloque* block,char name[20],int tipo) {
-        Campos *campos = new Campos(name, tipo, 28);
-        if (primerBloqueCampos == -1) {
-            int numBlock = block->asignarBloque()->numeroBloque;
-            BloqueCampos *blockCamps = new BloqueCampos(file, numBlock);
-            blockCamps->camposList.push_back(campos);
-            blockCamps->cant++;
-            blockCamps->escribir();
-            listCampos.push_back(campos);
-            primerBloqueCampos = blockCamps->numeroBloque;
-            actualBloqueCampos = blockCamps->numeroBloque;
-            return;
-        } else {
-            int actual = primerBloqueCampos;
-            while (actual != -1) {
-                BloqueCampos *blockCamps = new BloqueCampos(file, actual);
-                blockCamps->cargar();
-                int maximo = 17;
-                if (blockCamps->cant < maximo) {
-                    blockCamps->camposList.push_back(campos);
-                    blockCamps->cant++;
-                    blockCamps->escribir();
-                    listCampos.push_back(campos);
+        void crearCampo(AdminBloque* block,char name[20],int tipo) {
+            Campos *campos = new Campos(name, tipo, 28);
+            if (primerBloqueCampos == -1) {
+                int numBlock = block->asignarBloque()->numeroBloque;
+                BloqueCampos *blockCamps = new BloqueCampos(file, numBlock);
+                blockCamps->camposList.push_back(campos);
+                blockCamps->cant++;
+                blockCamps->escribir();
+                listCampos.push_back(campos);
+                primerBloqueCampos = blockCamps->numeroBloque;
+                actualBloqueCampos = blockCamps->numeroBloque;
+                return;
+            }
+                int actual = primerBloqueCampos;
+                while (actual != -1) {
+                    BloqueCampos *blockCamps = new BloqueCampos(file, actual);
+                    blockCamps->cargar();
+                    int maximo = 17;
+                    if (blockCamps->cant < maximo) {
+                        blockCamps->camposList.push_back(campos);
+                        blockCamps->cant++;
+                        blockCamps->escribir();
+                        listCampos.push_back(campos);
+                        return;
+                    }
+                    actual = blockCamps->siguiente;
+                }
+                BloqueCampos *bloqueCampos = new BloqueCampos(file, block->asignarBloque()->numeroBloque);
+                BloqueCampos *tmpBlock = new BloqueCampos(file, actualBloqueCampos);
+                tmpBlock->cargar();
+                tmpBlock->siguiente = bloqueCampos->numeroBloque;
+                tmpBlock->escribir();
+                bloqueCampos->camposList.push_back(campos);
+                bloqueCampos->cant++;
+                bloqueCampos->escribir();
+                actualBloqueCampos = bloqueCampos->numeroBloque;
+
+        }
+
+        void CrearRegistro(AdminBloque* adblock, Registros* reg)
+        {
+            if(primerBloqueRegistros==-1)
+            {
+                Bloques* b = adblock->asignarBloque();
+                BloqueRegistros* br= new BloqueRegistros(file, b->numeroBloque);
+                br->listRegistros.push_back(reg);
+                br->cantReg++;
+                br->escribir();
+                listRegistros.push_back(reg);
+                primerBloqueRegistros=b->numeroBloque;
+                actualBloqueRegistros=b->numeroBloque;
+                return;
+            }
+            int actual=primerBloqueRegistros;
+            while(actual!=-1)
+            {
+                BloqueRegistros* br = new BloqueRegistros(file,actual);
+                br->cargar();
+                int max = 496/reg->length;
+                if(br->listRegistros.size() < 2)
+                {
+                    br->listRegistros.push_back(reg);
+                    br->cantReg++;
+                    br->escribir();
+                    listRegistros.push_back(reg);
                     return;
                 }
-                actual = blockCamps->siguiente;
+                actual=br->siguiente;
             }
-            BloqueCampos *bloqueCampos = new BloqueCampos(file, block->asignarBloque()->numeroBloque);
-            BloqueCampos *tmpBlock = new BloqueCampos(file, actualBloqueCampos);
-            tmpBlock->cargar();
-            tmpBlock->siguiente = bloqueCampos->numeroBloque;
-            tmpBlock->escribir();
-            bloqueCampos->camposList.push_back(campos);
-            bloqueCampos->cant++;
-            bloqueCampos->escribir();
-            actualBloqueCampos = bloqueCampos->numeroBloque;
+
+            Bloques* b=adblock->asignarBloque();
+            BloqueRegistros* br = new BloqueRegistros(file,b->numeroBloque);
+            BloqueRegistros* tmp = new BloqueRegistros(file,actualBloqueRegistros);
+            tmp->cargar();
+            tmp->siguiente = br->numeroBloque;
+            tmp->escribir();
+            br->listRegistros.push_back(reg);
+            listRegistros.push_back(reg);
+            br->cantReg++;
+            br->escribir();
+            actualBloqueRegistros=b->numeroBloque;
         }
-    }
 
-
-
-    void InterpretarRegistros(char* data, int length)
+        void CargarRegistros()
         {
+            int actual = primerBloqueRegistros;
+            while(actual!=-1)
+            {
+                BloqueRegistros* br = new BloqueRegistros(file,actual);
+                int longitudRegistro = this->GetLongitudRegistros();
+                br->cargar();
+                std::list<Registros*>::iterator c = br->listRegistros.begin();
+                for(int x=0;x< br->listRegistros.size();x++)
+                {
+                    std::advance(c,x);
+                    Registros* tmp = *c;
+                    listRegistros.push_back(InterpretarRegistros(tmp->ToChar(),longitudRegistro));
+                }
+                actual=br->siguiente;
+            }
+        }
 
+        int GetLongitudRegistros()
+        {
+            int sum=0;
+            for(std::list<Campos*>::iterator c = listCampos.begin(); c!=listCampos.end(); c++)
+            {
+                Campos* tmp = *c;
+                sum+=tmp->longi;
+            }
+            return sum;
+        }
+
+
+
+        Registros* InterpretarRegistros(char* data, int length)
+        {
+            int pos=0;
+            Registros * registros= new Registros(length);
+            std::list<Campos*>::iterator c = listCampos.begin();
+            for(int i=0; i<listCampos.size(); i++)
+            {
+                std::advance(c,i);
+                Campos* tmp = *c;
+                CampoDatos* campoDatos= new CampoDatos();
+                Campos* defCampo= tmp;
+                campoDatos->campos =defCampo;
+                memcpy(&campoDatos->valor,&data[pos],20);
+                pos+=defCampo->longi;
+                registros->campDatosList.push_back(campoDatos);
+            }
+            return registros;
         }
 
         char* toChar(){
@@ -116,8 +207,6 @@ class Tablas{
             memcpy(&data[pos],&numeroBloque,4);
             pos+=4;
         }
-
-        Tablas() {}
 
         void toBloque(char* data)
         {
@@ -148,12 +237,6 @@ class BloqueTablas : public Bloques
 
     public:
         std::list<Tablas*> listaTablas;
-        BloqueTablas(int nb, int siguiente, char* path, char nom[20], int ID, int primerBloque, int actualBloque, int primerBloqueRegistros
-        ,int actualBloqueRegistros) : Bloques(nb,sizeBloque,siguiente) {
-            BloqueTablas::numeroBloque = nb;
-            BloqueTablas::siguiente = siguiente;
-            listaTablas.push_back(new Tablas(file,nom,ID,primerBloque,actualBloque,primerBloqueRegistros,actualBloqueRegistros,nb));
-        }
 
         BloqueTablas(DataFile* file, int nB) : Bloques(file,nB)
         {
@@ -204,23 +287,23 @@ class BloqueTablas : public Bloques
             }
         }
 
-        void escribir()
-        {
-            file->abrir();
-            char* data = this->toChar();
-            int pos= numeroBloque*512;
-            file->escribir(data,pos,512);
-            file->cerrar();
-        }
+    void escribir()
+    {
+        file->abrir();
+        char* data = this->toChar();
+        int pos= numeroBloque*sizeBloque+20;
+        file->escribir(data,pos,sizeBloque);
+        file->cerrar();
+    }
 
-        void cargar()
-        {
-            file->abrir();
-            int pos= numeroBloque *512;
-            char* data = file->leer(pos,512);
-            toBloque(data);
-            file->cerrar();
-        }
+    void cargar()
+    {
+        file->abrir();
+        int pos= numeroBloque * sizeBloque+20;
+        char* data = file->leer(pos,sizeBloque);
+        toBloque(data);
+        file->cerrar();
+    }
 
     int cantEntradas = 0;
 

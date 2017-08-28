@@ -105,6 +105,9 @@
 		<Unit filename="/home/alejandro/Documentos/ED2/SistemaArchivos/DataFile.h">
 			<Option target="SistemaArchivos"/>
 		</Unit>
+		<Unit filename="/home/alejandro/Documentos/ED2/SistemaArchivos/JsonManager.h">
+			<Option target="SistemaArchivos"/>
+		</Unit>
 		<Unit filename="/home/alejandro/Documentos/ED2/SistemaArchivos/MasterBlock.h">
 			<Option target="SistemaArchivos"/>
 		</Unit>

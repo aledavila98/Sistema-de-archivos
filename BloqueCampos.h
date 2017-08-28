@@ -47,23 +47,46 @@ class Campos{
 };
 
 class CampoDatos{
+public:
+    char valor[20];
+    CampoDatos(char v[20], Campos* c)
+    {
+        strncpy(valor,v,20);
+        campos = c;
+    }
 
+    CampoDatos() {}
+
+    char* ToChar()
+    {
+        char* data = new char[20];
+        int pos=0;
+        memcpy(&data[pos],&valor,20);
+        pos+=20;
+    }
+
+    void ToCampoDatos(char* data)
+    {
+        int pos=0;
+        memcpy(&valor,&data[pos],20);
+        pos+=20;
+    }
+    Campos* campos;
 };
 
 class BloqueCampos : public Bloques
 {
     public:
         int cant;
-        int numeroBloque;
         std::list<Campos*> camposList;
         BloqueCampos(DataFile* fil,int nb) : Bloques(fil,nb) {
-            numeroBloque = nb;
+            BloqueCampos::numeroBloque = nb;
             file = fil;
         }
 
         char* toChar()
         {
-            char* data = new char[sizeBloque];
+            char* data = new char[(camposList.size()*28)+12];
             int pos = 0;
             memcpy(&data[pos],&numeroBloque,4);
             pos+=4;
@@ -95,9 +118,39 @@ class BloqueCampos : public Bloques
                 Campos* campos = new Campos("",0,28);
                 campos->toCampo(&data[pos]);
                 camposList.push_back(campos);
-                pos+=40;
+                pos+=28;
             }
         }
+
+        void listCampos()
+        {
+            for (std::list<Campos*>::iterator c = camposList.begin(); c!=camposList.end(); c++)
+            {
+                Campos* tmp = *c;
+                printf(tmp->nombre);
+            }
+        }
+
+    void cargar()
+    {
+        file->abrir();
+        int pos= numeroBloque * sizeBloque+20;
+        char* data = file->leer(pos,sizeBloque);
+        toBloque(data);
+        file->cerrar();
+    }
+
+    void escribir()
+    {
+        file->abrir();
+        char* data = this->toChar();
+        int pos= numeroBloque*sizeBloque+20;
+        file->escribir(data,pos,sizeBloque);
+        file->cerrar();
+    }
+
+
+
 
     /*   char* data = new char[512];
         int pos=0;

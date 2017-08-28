@@ -62,6 +62,22 @@ class MasterBlock : public Bloques
             pos+=4;
         }
 
+    void cargar()
+    {
+        file->abrir();
+        char* data = file->leer(0,512);
+        toBlock(data);
+        file->cerrar();
+    }
+
+    void escribir()
+    {
+        file->abrir();
+        char* data = this->toChar();
+        file->escribir(data,0,512);
+        file->cerrar();
+    }
+
 
     private:
     DataFile* file;

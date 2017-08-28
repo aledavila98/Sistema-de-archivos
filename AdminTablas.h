@@ -72,6 +72,7 @@ public:
         bloque->masterBlock->actualBloqueTabla = tmp->numeroBloque;
         bloque->masterBlock->escribir();
         bTablasList.push_back(tmp);
+
     }
 
     void CrearCampo(char nombreCampo[20],int id,int tipo, AdminBloque* manejador)
@@ -120,6 +121,12 @@ public:
         }
     }
 
+    void ListarTablas()
+    {
+        ListarTablas(bTablasList);
+    }
+
+
     void loadBloqueTabla()
     {
         int actual = 0;
@@ -132,6 +139,17 @@ public:
             bloque= new BloqueTablas(file,actual);
             bloque->cargar();
             bTablasList.push_back(bloque);
+        }
+    }
+
+    void AddRegistro(int ID, AdminBloque* adblock, Registros* reg)
+    {
+        Tablas* tablas = BuscarTabla(ID);
+        if (tablas!=0)
+        {
+            tablas->CrearRegistro(adblock,reg);
+            BloqueTablas* tmp = BuscarBloqueTabla(tablas->numeroBloque);
+            tmp->escribir();
         }
     }
 

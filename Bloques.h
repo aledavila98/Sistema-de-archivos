@@ -50,7 +50,7 @@ class Bloques{
         void cargar()
         {
             file->abrir();
-            int pos= numeroBloque * sizeBloque;
+            int pos= numeroBloque * sizeBloque+sizeBloque;
             char* data = file->leer(pos,sizeBloque);
             toBloque(data);
             file->cerrar();
@@ -60,12 +60,11 @@ class Bloques{
         {
             file->abrir();
             char* data = this->toChar();
-            int pos= numeroBloque*sizeBloque;
+            int pos= numeroBloque*sizeBloque+sizeBloque;
             file->escribir(data,pos,sizeBloque);
             file->cerrar();
         }
 
-    private:
         void toBloque(char* data)
         {
             int pos = 0;
